@@ -1,65 +1,58 @@
 package com.mygdx.game.model;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Vector2;
 
 public class FlyingCircle {
-    private int x;
-    private int y;
-    private float vx;
-    private float vy;
+    private Vector2 position;
+    private Vector2 velocity;
     private Texture texture;
+
     public void render(Batch batch) {
 
-        texture = new Texture("circle.png");
-        batch.draw(texture, this.x, this.y);
+        if (this.texture == null) this.texture = new Texture("r2.png");
+        ckeckScreeEnds();
+        this.position.add(velocity);
+        if (Gdx.input.isTouched()) {
+            Vector2 mouseVec = new Vector2(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
+            Vector2 newVelocity = mouseVec.sub(position);
+            this.velocity = newVelocity;
+        }
+        batch.draw(this.texture, this.position.x, this.position.y);
+
     }
 
-    public FlyingCircle(int x, int y, float vx, float vy) {
-        this.x = x;
-        this.y = y;
-        this.vx = vx;
-        this.vy = vy;
+    private void ckeckScreeEnds() {
+        if (position.x <= 0 || position.x >= Gdx.graphics.getWidth() - texture.getWidth()) {
+            this.velocity.x = -1 * velocity.x;
+        }
+        if (position.y <= 0 || position.y >= Gdx.graphics.getHeight() - texture.getHeight()) {
+            this.velocity.y = -1 * velocity.y;
+        }
     }
 
-    public int getX() {
-        return x;
+
+    public FlyingCircle(Vector2 pos, Vector2 vel) {
+        this.position = pos;
+        this.velocity = vel;
     }
 
-    public void setX(int x) {
-        this.x = x;
+    public float getX() {
+        return this.position.x;
     }
 
-    public int getY() {
-        return y;
+    public void setX(float x) {
+        this.position.x = x;
     }
 
-    public void setY(int y) {
-        this.y = y;
+    public float getY() {
+        return this.position.y;
     }
 
-    public float getVx() {
-        return vx;
-    }
-
-    public void setVx(int vx) {
-        this.vx = vx;
-    }
-
-    public Texture getTexture() {
-        return texture;
-    }
-
-    public void setTexture(Texture texture) {
-        this.texture = texture;
-    }
-
-    public float getVy() {
-        return vy;
-    }
-
-    public void setVy(int vy) {
-        this.vy = vy;
+    public void setY(float y) {
+        this.position.y = y;
     }
 
 }
